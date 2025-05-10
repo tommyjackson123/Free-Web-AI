@@ -40,17 +40,28 @@
 
     <div id="output"></div>
 
-    <script>
-      async function handleSubmit() {
-        const prompt = document.getElementById('prompt').value;
-        const output = document.getElementById('output');
-        output.textContent = "⏳ Thinking...";
+   <script>
+  async function handleSubmit() {
+    const prompt = document.getElementById('prompt').value;
+    const output = document.getElementById('output');
+    output.textContent = "⏳ Thinking...";
 
-        // Dummy response for now — we'll connect AI next
-        setTimeout(() => {
-          output.textContent = `Pretend AI says: "Here’s code to build '${prompt}'..."`;
-        }, 1000);
-      }
-    </script>
-  </body>
+    try {
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ prompt })
+      });
+
+      const data = await res.json();
+      output.textContent = data.result.trim();
+    } catch (err) {
+      output.textContent = "❌ Error: " + err.message;
+    }
+  }
+</script>
+</body>
 </html>
+
